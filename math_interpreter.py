@@ -23,9 +23,11 @@ with open("test.mthc", "r") as f:
             check_command_length("assign", 2, float('inf'), len(code))
             var_name = code[0]
             check_unknown_variable(var_name)
-            math_variables[var_name]["value"] = set()
-            for value in code[1:]:
-                math_variables[var_name]["value"].add(value)
+            var_type = math_variables[var_name]["type"]
+            if var_type == "set":
+                math_variables[var_name]["value"] = set()
+                for value in code[1:]:
+                    math_variables[var_name]["value"].add(value)
 
         # "set" command
         elif code[0] == "set":
