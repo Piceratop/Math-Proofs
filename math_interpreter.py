@@ -1,5 +1,5 @@
 math_variables = dict()
-keywords = {"=", "let", "be"}
+keywords = {"=", "let", "{", "}"}
 
 def validate_minimum(tokens, keyword, required):
     if len(tokens) < required:
@@ -34,12 +34,23 @@ with open("test.mthc", "r") as f:
                 exit(1)
             else:
                 validate_nonkeyword(tokens[1])
-                validate_required_keyword(tokens[2], "be")
-                validate_nonkeyword(tokens[3])
-                math_variables[tokens[1]] = {
-                    "type": tokens[3],
-                    "value": None
-                }
+                validate_required_keyword(tokens[2], "=")
+                bracket_stack = []
+                for tok in tokens[3:]:
+                    if tok == "{":
+                        bracket_stack.append(tok)
+                    elif tok == "}":
+                        while True:
+                            curr_v = set()
+                            if len(bracket_stack) == 0:
+                                print("Syntax error: Missing ' } '")
+                                exit(1)
+                            if bracket_stack[-1] == "{":
+                                bracket_stack.pop()
+                                bracket_stack
+                                break
+                            curr_v.add(bracket_stack.pop())
 
+                        
 
 # print(math_variables)
