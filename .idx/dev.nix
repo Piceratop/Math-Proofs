@@ -9,7 +9,7 @@
     # pkgs.go
     pkgs.python3
     # pkgs.python311Packages.pip
-    # pkgs.nodejs_20
+    pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
   ];
 

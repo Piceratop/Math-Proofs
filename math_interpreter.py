@@ -19,7 +19,6 @@ def validate_required_keyword(token, keyword):
 
 with open("test.mthc", "r") as f:
     code_lines = f.readlines()
-    print(code_lines)
     for code in code_lines:
         tokens = code.strip().split(maxsplit=-1)
         if tokens[0] == "let":
@@ -29,28 +28,31 @@ with open("test.mthc", "r") as f:
                     "type": "any",
                     "value": None
                 }
-            elif len(token) < 2:
-                print(f"Syntax error:' {tokens[0]} ' was expected, but got ' {tokens[1]} ' instead.")
-                exit(1)
             else:
                 validate_nonkeyword(tokens[1])
                 validate_required_keyword(tokens[2], "=")
                 bracket_stack = []
+                curr_v = set()
                 for tok in tokens[3:]:
-                    if tok == "{":
-                        bracket_stack.append(tok)
-                    elif tok == "}":
+                    if tok == "}":
                         while True:
-                            curr_v = set()
                             if len(bracket_stack) == 0:
-                                print("Syntax error: Missing ' } '")
+                                print("Syntax error: Missing ' { '")
                                 exit(1)
                             if bracket_stack[-1] == "{":
                                 bracket_stack.pop()
-                                bracket_stack
+                                bracket_stack.append(curr_v)
+                                curr_v = set()
                                 break
                             curr_v.add(bracket_stack.pop())
+                    else:
+                        bracket_stack.append(tok)
+                if (len(bracket_stack) != 1):
+                    print("Syntax error: Too many variable assignments.")
+                    exit(1)
+                math_variables[tokens[1]] = {
+                    "type": "set",
+                    "value": bracket_stack[0]
+                }
 
-                        
-
-# print(math_variables)
+print(math_variables)
