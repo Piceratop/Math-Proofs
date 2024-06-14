@@ -1,22 +1,51 @@
-const math_variables = {};
+const mathVariables = {};
 const keywords = new Set(["=", "let", "{", "}"]);
 
-function display_error(text) {
+function displayError(text) {
     console.log(text);
     process.exit(1);
 }
 
-function validate_min_tokens(tokens, keyword, required) {
+function validateMinTokens(tokens, keyword, required) {
     if (tokens.length < required) {
-        display_error(`Syntax error: ${keyword} requires at least ${required - 1} arguments.`)
+        displayError(`Syntax error: ${keyword} requires at least ${required - 1} arguments.`)
     }
 }
 
-function validate_nonkeyword(token) {
+function validateNonkeyword(token) {
     if (keywords.has(token)) {
-        display_error(`Syntax error: ${token} is a keyword.`)
+        displayError(`Syntax error: ${token} is a keyword.`)
     }
 }
 
+function validateKeyword(token, keyword) {
+    if (token !== keyword) {
+        displayError(`Syntax error: ${token} is not a ${keyword}.`)
+    }
+}
 
-console.log(math_variables);
+const fs = require('fs');
+const file = fs.readFileSync('test.mthc', 'utf8').split('\n');
+file.forEach((codeLines) => {
+    const tokens = codeLines.split(/\s+/);
+    switch (tokens[0]) {
+        case "let":
+            validateNonkeyword(tokens[1]);
+            if (tokens.length == 2) {
+                mathVariables[tokens[1]] = {
+                    "value": undefined,
+                    "type": "any"
+                }
+            } else {
+                validateKeyword(tokens[2], "=");
+                bracketStack = [];
+                currV = new Set();
+                
+            }
+            break;
+        default:
+            break;
+    }
+})
+
+console.log(mathVariables);
