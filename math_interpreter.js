@@ -38,9 +38,24 @@ file.forEach((codeLines) => {
                 }
             } else {
                 validateKeyword(tokens[2], "=");
-                bracketStack = [];
-                currV = new Set();
-                
+                let bracketStack = [];
+                for (let i = 3; i < tokens.length; i++) {
+                    switch (tokens[i]) {
+                        case "{":
+                            bracketStack.push("{");
+                            break;
+                        case "}":
+                            let currSet = new Set();
+                            while (bracketStack.length > 0 && bracketStack[bracketStack.length - 1] != "{") {
+                                currSet.add(bracketStack.pop());
+                            }
+                            if (bracketStack.length == 0) {
+                                displayError("Syntax error: } without {");
+                            }
+                            bracketStack.push(currSet);
+                            break;
+                    }
+                }
             }
             break;
         default:
