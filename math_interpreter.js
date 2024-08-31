@@ -39,22 +39,40 @@ file.forEach((codeLines) => {
             } else {
                 validateKeyword(tokens[2], "=");
                 let bracketStack = [];
+                let allowAdding = true;
                 for (let i = 3; i < tokens.length; i++) {
                     switch (tokens[i]) {
                         case "{":
                             bracketStack.push("{");
                             break;
                         case "}":
+                            allowAdding = false;
                             let currSet = new Set();
                             while (bracketStack.length > 0 && bracketStack[bracketStack.length - 1] != "{") {
                                 currSet.add(bracketStack.pop());
                             }
                             if (bracketStack.length == 0) {
-                                displayError("Syntax error: } without {");
+                                displayError("Syntax error: } without {.");
                             }
+                            bracketStack.pop();
                             bracketStack.push(currSet);
                             break;
+                        case ',':
+                            allowAdding = true;
+                            break;
+                        default:
+                            if (!allowAdding) displayError('Syntax error: Missing \',\' between two elements.')
+                            allowAdding = false;
+                            bracketStack.push(tokens[i]);
+                            break;
                     }
+                }
+                if (bracketStack.length > 1) {
+                    displayError("Syntax error: { without }.");
+                }
+                mathVariables[tokens[1]] = {
+                    "value": bracketStack[0],
+                    "type": "set"
                 }
             }
             break;
