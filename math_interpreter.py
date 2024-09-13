@@ -1,3 +1,6 @@
+variables_dict = {}
+ketwords = {":=", "{", "}", "∅"}
+
 def parse_tokens(line):
     tokens_list = []
     current_token = ""
