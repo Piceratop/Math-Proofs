@@ -1,26 +1,13 @@
-variables_dict = {}
-ketwords = {":=", "{", "}", "∅"}
+from math_parser import parse_line
+# keywords = {"¬"}
 
-def parse_tokens(line):
-    tokens_list = []
-    current_token = ""
-    for ch in line:
-        if ch.isspace():
-            if current_token:
-                tokens_list.append(current_token)
-                current_token = ""
-        elif ch == "{" or ch == "}":
-            if current_token:
-                tokens_list.append(current_token)
-                current_token = ""
-            tokens_list.append(ch)
-        else:
-            current_token += ch
-    if current_token:
-        tokens_list.append(current_token)
-    return tokens_list
+class MathError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 
-with open("test.mthc", "r") as f:
+with open("test.mthc", "r", encoding="utf-8") as f:
     for line in f:
-        line = parse_tokens(line)
-        print(line)
+        tokenized_line = parse_line(line)
+        if not tokenized_line:
+            continue
+        print(tokenized_line)
